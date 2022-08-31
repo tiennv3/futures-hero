@@ -81,6 +81,7 @@ AttributeError: 'NoneType' object has no attribute 'encode'
 
 <a name="pip3_requirements"></a>
 ### 2. PIP3 REQUIREMENTS
+Python 3.6.8
 To install all the dependencies requirements in one line:
 ```
 pip3 install -r requirements.txt
@@ -94,6 +95,9 @@ pip3 install requests
 pip3 install termcolor
 pip3 install python-binance
 pip3 install cryptography==3.4.6
+
+pip3 install pyOpenSSL
+
 ```
 
 <a name="configurations"></a>
