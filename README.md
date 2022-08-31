@@ -81,8 +81,7 @@ AttributeError: 'NoneType' object has no attribute 'encode'
 
 <a name="pip3_requirements"></a>
 ### 2. PIP3 REQUIREMENTS
-Workig with Python 3.6.8
-```
+Workig with Python 3.6.8**
 To install all the dependencies requirements in one line:
 ```
 pip3 install -r requirements.txt
