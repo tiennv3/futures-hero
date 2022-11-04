@@ -10,10 +10,12 @@ import os, requests, socket, urllib3
 from webhook_launcher import telegram_bot_sendtext
 from datetime import datetime
 from termcolor import colored
+import pytz
 
 from binance.exceptions import BinanceAPIException
 print(colored("------ LIVE TRADE IS ENABLED ------\n", "green")) if config.live_trade else print(colored("THIS IS BACKTESTING\n", "red")) 
 
+tz = pytz.timezone('Asia/Ho_Chi_Minh')
 now = datetime.now()
 current_time = now.strftime("%H:%M:%S")
 
@@ -45,7 +47,7 @@ def lets_make_some_money(pair, leverage, quantity):
         new_quantity_long = round(float(response[1].get('positionAmt')) * config.new_quantity_long_multiplier, 2)
         new_quantity_long_become = round(float(response[1].get('positionAmt')) * config.new_quantity_long_multiplier, 2) + round(float(response[1].get('positionAmt')), 2)
         new_price_long = round((float(response[1].get('entryPrice'))) - (config.add_long_measure * (float(response[1].get('entryPrice'))) / 100), 2)
-        if current_time=='17:30:00':
+        if current_time=='10:30:00' or current_time == '2:30:00':
             telegram_bot_sendtext("new_quantity_long " + str(new_quantity_long)+" | new_quantity_long_become " + str(new_quantity_long_become)+" | new_price_long " + str(new_price_long))
             # telegram_bot_sendtext_delay("new_quantity_long " + str(new_quantity_long))
             # telegram_bot_sendtext_delay("new_quantity_long_become " + str(new_quantity_long_become))
@@ -95,7 +97,7 @@ def lets_make_some_money(pair, leverage, quantity):
         new_quantity_short_become = round(abs(float(response[2].get('positionAmt'))) * config.new_quantity_short_multiplier, 2) + round(abs(float(response[2].get('positionAmt'))), 2)
         new_price_short = round(((float(response[2].get('entryPrice'))) / (100 - config.add_short_measure)) * 100, 2)
         # if api_binance.active_webhook:
-        if current_time == '17:30:00':
+        if current_time=='10:30:00' or current_time == '2:30:00':
             telegram_bot_sendtext("new_quantity_short " + str(new_quantity_short)+" | new_quantity_short_become " + str(new_quantity_short_become)+" | new_price_short " + str(new_price_short))
             # telegram_bot_sendtext_delay("new_quantity_short " + str(new_quantity_short))
             # telegram_bot_sendtext_delay("new_quantity_short_become " + str(new_quantity_short_become))
@@ -151,8 +153,6 @@ def in_Profit_show(response):
     unRealizedPNL = round(float(response.get('unRealizedProfit')), 2)
     breakeven_PNL = (markPrice * positionAmt * taker_fees) / 100
     return round(breakeven_PNL,4)
-
-
 
 try:
     while True:

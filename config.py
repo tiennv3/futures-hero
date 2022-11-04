@@ -1,14 +1,14 @@
 live_trade = True
 
-coin     = [""]
+coin     = ["BNB"]
 # BNB
-quantity = []
+quantity = [0.5]
 # 0.75
 
 leverage, pair = [], []
 
 for i in range(len(coin)):
-    pair.append(coin[i] + "BUSD")
+    pair.append(coin[i] + "USDT")
     if   coin[i] == "BTC": leverage.append(2)
     elif coin[i] == "ETH": leverage.append(2)
     else: leverage.append(2)
