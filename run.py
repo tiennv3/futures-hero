@@ -51,8 +51,8 @@ def lets_make_some_money(pair, leverage, amount, token_decimal, price_decimal):
 
         add_amount_long = round(colateralAmount_long * config.dca_amount_percent, price_decimal)
         add_quantity_long = round((add_amount_long * leverage) / float(lastest_price.get('price')) , token_decimal)
-        next_dca_price_long = round((marginAmount_long - colateralAmount_long) / float(response[1].get('positionAmt')), token_decimal)
-        takeProfit_long_atPrice = round((marginAmount_long + colateralAmount_long) / float(response[1].get('positionAmt')), token_decimal)
+        next_dca_price_long = round((marginAmount_long - abs(colateralAmount_long * config.dca_percent)) / float(response[1].get('positionAmt')), token_decimal)
+        takeProfit_long_atPrice = round((marginAmount_long + abs(colateralAmount_long * config.dca_percent)) / float(response[1].get('positionAmt')), token_decimal)
 
         if str(current_time) =='9:30:00' or str(current_time) == '17:30:00':
             telegram_bot_sendtext("unRealizedProfit_long " + str(unRealizedProfit_long)
@@ -84,8 +84,8 @@ def lets_make_some_money(pair, leverage, amount, token_decimal, price_decimal):
             init_quantity = round((leverage * amount / float(lastest_price.get('price'))), token_decimal)            
             api_binance.market_open_long(pair, init_quantity)
 
-            print(colored("_LONG_SIDE : Take Profit", "green"))
-            print("_LONG_SIDE : Take Profit" + str(unRealizedProfit_long))
+            print(colored("_LONG_SIDE : Take Profit ", "green"))
+            print("_LONG_SIDE : Take Profit " + str(unRealizedProfit_long))
             telegram_bot_sendtext("_LONG_SIDE : Take Profit "
                                 + " | PNL " + str(unRealizedProfit_long))
         else: 
@@ -95,10 +95,10 @@ def lets_make_some_money(pair, leverage, amount, token_decimal, price_decimal):
                 # wait for 1-3 seconds
                 time.sleep(random.randint(1, 3))
                 print(colored("_LONG_SIDE : ADD LONG ", "green"))
-                print("_LONG_SIDE : add_quantity_long" + str(add_quantity_long))
+                print("_LONG_SIDE : add_quantity_long " + str(add_quantity_long))
                 telegram_bot_sendtext("_LONG_SIDE : ADD LONG "
                                     + " | add_quantity_long " + str(add_quantity_long))     
-            else: print(colored("_LONG_SIDE : HOLDING_LONG", "green"))         
+            else: print(colored("_LONG_SIDE : HOLDING_LONG ", "green"))         
 
     if api_binance.SHORT_SIDE(response) == "NO_POSITION":
         if hero["GO_SHORT"].iloc[-1]:
@@ -114,8 +114,8 @@ def lets_make_some_money(pair, leverage, amount, token_decimal, price_decimal):
 
         add_amount_short = round(colateralAmount_short * config.dca_amount_percent, price_decimal)
         add_quantity_short = round((add_amount_short * leverage) / float(lastest_price.get('price')) , token_decimal)
-        next_dca_price_short = round((marginAmount_short + colateralAmount_short) / abs(float(response[2].get('positionAmt'))), token_decimal)
-        takeProfit_short_atPrice = round((marginAmount_short - colateralAmount_short) / abs(float(response[2].get('positionAmt'))), token_decimal)
+        next_dca_price_short = round((marginAmount_short + abs(colateralAmount_short * config.dca_percent)) / abs(float(response[2].get('positionAmt'))), token_decimal)
+        takeProfit_short_atPrice = round((marginAmount_short - abs(colateralAmount_short * config.dca_percent)) / abs(float(response[2].get('positionAmt'))), token_decimal)
 
         if str(current_time) =='9:30:00' or str(current_time) == '17:30:00':
             telegram_bot_sendtext("unRealizedProfit_short " + str(unRealizedProfit_short)
@@ -146,8 +146,8 @@ def lets_make_some_money(pair, leverage, amount, token_decimal, price_decimal):
             # after take profit open short again
             init_quantity = round((leverage * amount / float(lastest_price.get('price'))), token_decimal)
             api_binance.market_open_short(pair, init_quantity)
-            print(colored("SHORT_SIDE : Take Profit", "red"))
-            print("SHORT_SIDE : Take Profit" + str(unRealizedProfit_short))
+            print(colored("SHORT_SIDE : Take Profit ", "red"))
+            print("SHORT_SIDE : Take Profit " + str(unRealizedProfit_short))
             telegram_bot_sendtext("SHORT_SIDE : Take Profit "
                                 + " | PNL " + str(unRealizedProfit_short))
         else: 
@@ -156,10 +156,10 @@ def lets_make_some_money(pair, leverage, amount, token_decimal, price_decimal):
                 # wait for 1-3 seconds
                 time.sleep(random.randint(1, 3))
                 print(colored("SHORT_SIDE : ADD SHORT", "red"))
-                print("SHORT_SIDE : add_quantity_short" + str(add_quantity_short))
+                print("SHORT_SIDE : add_quantity_short " + str(add_quantity_short))
                 telegram_bot_sendtext("SHORT_SIDE : ADD SHORT "
                                     + " | add_quantity_short " + str(add_quantity_short))
-            else: print(colored("SHORT_SIDE : HOLDING_SHORT", "red"))                
+            else: print(colored("SHORT_SIDE : HOLDING_SHORT ", "red"))                
 
     print("Last action executed @ " + datetime.now().strftime("%H:%M:%S") + "\n")
 

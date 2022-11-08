@@ -5,7 +5,7 @@ coin     = ["BNB"]
 amount = [20]
 # 0.75
 leverage = [10]
-token_decimal = [3]
+token_decimal = [2]
 price_decimal = [2]
 
 pair = []
@@ -19,7 +19,7 @@ for i in range(len(coin)):
     print()
 
 #DCA
-dca_percent = -1
+dca_percent = -0.7
 dca_amount_percent = 0.25
 takeProfit_percent = 0.1
 # dca_measure = 100
