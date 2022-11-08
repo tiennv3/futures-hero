@@ -44,12 +44,13 @@ def lets_make_some_money(pair, leverage, amount, token_decimal, price_decimal):
         else: print("_LONG_SIDE : WAIT ")
 
     if api_binance.LONG_SIDE(response) == "LONGING":
+
         unRealizedProfit_long = (float(response[1].get('unRealizedProfit')))
-        colateralAmount_long = round(((float(response[1].get('entryPrice')) * float(response[1].get('positionAmt'))) / leverage), price_decimal)
-        marginAmount_long = round((float(response[1].get('entryPrice')) * float(response[1].get('positionAmt'))), price_decimal)
+        colateralAmount_long = round((abs(float(response[1].get('notional'))) / leverage), price_decimal)
+        marginAmount_long = round(abs(float(response[1].get('notional'))), price_decimal)
 
         add_amount_long = round(colateralAmount_long * config.dca_amount_percent, price_decimal)
-        add_quantity_long = round(add_amount_long * leverage, token_decimal)
+        add_quantity_long = round((add_amount_long * leverage) / float(lastest_price.get('price')) , token_decimal)
         next_dca_price_long = round((marginAmount_long - colateralAmount_long) / float(response[1].get('positionAmt')), token_decimal)
         takeProfit_long_atPrice = round((marginAmount_long + colateralAmount_long) / float(response[1].get('positionAmt')), token_decimal)
 
@@ -72,6 +73,7 @@ def lets_make_some_money(pair, leverage, amount, token_decimal, price_decimal):
         print("markPrice " + response[1].get('markPrice'))
         print("liquidationPrice " + response[1].get('liquidationPrice'))
         print("next_dca_price_long " + str(next_dca_price_long))
+        print("add_quantity_long " + str(add_quantity_long))
         print("takeProfit_long_atPrice " + str(takeProfit_long_atPrice))
         
         if unRealizedProfit_long >= (round(float(colateralAmount_long * config.takeProfit_percent), price_decimal)):
@@ -105,12 +107,13 @@ def lets_make_some_money(pair, leverage, amount, token_decimal, price_decimal):
         else: print("SHORT_SIDE : WAIT")
 
     if api_binance.SHORT_SIDE(response) == "SHORTING":
+        
         unRealizedProfit_short = (float(response[2].get('unRealizedProfit')))
-        colateralAmount_short = round(((float(response[2].get('entryPrice')) * abs(float(response[2].get('positionAmt')))) / leverage), price_decimal)
-        marginAmount_short = round((float(response[2].get('entryPrice')) * abs(float(response[2].get('positionAmt')))), price_decimal)
+        colateralAmount_short = round((abs(float(response[2].get('notional'))) / leverage), price_decimal)
+        marginAmount_short = round(abs(float(response[2].get('notional'))), price_decimal)
 
         add_amount_short = round(colateralAmount_short * config.dca_amount_percent, price_decimal)
-        add_quantity_short = round(add_amount_short * leverage, token_decimal)
+        add_quantity_short = round((add_amount_short * leverage) / float(lastest_price.get('price')) , token_decimal)
         next_dca_price_short = round((marginAmount_short + colateralAmount_short) / abs(float(response[2].get('positionAmt'))), token_decimal)
         takeProfit_short_atPrice = round((marginAmount_short - colateralAmount_short) / abs(float(response[2].get('positionAmt'))), token_decimal)
 
@@ -133,6 +136,7 @@ def lets_make_some_money(pair, leverage, amount, token_decimal, price_decimal):
         print("markPrice " + response[2].get('markPrice'))
         print("liquidationPrice " + response[2].get('liquidationPrice'))
         print("next_dca_price_short " + str(next_dca_price_short))
+        print("add_quantity_short " + str(add_quantity_short))
         print("takeProfit_short_atPrice " + str(takeProfit_short_atPrice))
 
         if unRealizedProfit_short >= (round(float(colateralAmount_short * config.takeProfit_percent), price_decimal)):
