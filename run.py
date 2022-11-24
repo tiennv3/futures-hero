@@ -31,7 +31,7 @@ def lets_make_some_money(pair, leverage, amount, token_decimal, price_decimal):
     response = api_binance.position_information(pair)
     lastest_price = api_binance.get_lastest_price(pair)
 
-    if response[0].get('marginType') != "isolated": api_binance.change_margin_to_ISOLATED(pair)
+    if response[0].get('marginType') != "cross": api_binance.CRhange_margin_to_CROSSED(pair)
     if int(response[0].get("leverage")) != leverage: api_binance.change_leverage(pair, leverage)
 
     hero = choose_your_fighter.futures_hero(pair)
@@ -44,7 +44,7 @@ def lets_make_some_money(pair, leverage, amount, token_decimal, price_decimal):
         else: print("_LONG_SIDE : WAIT ")
 
     if api_binance.LONG_SIDE(response) == "LONGING":
-
+        
         unRealizedProfit_long = (float(response[1].get('unRealizedProfit')))
         colateralAmount_long = round((abs(float(response[1].get('notional'))) / leverage), price_decimal)
         marginAmount_long = round(abs(float(response[1].get('notional'))), price_decimal)
@@ -52,7 +52,7 @@ def lets_make_some_money(pair, leverage, amount, token_decimal, price_decimal):
         add_amount_long = round(colateralAmount_long * config.dca_amount_percent, price_decimal)
         add_quantity_long = round((add_amount_long * leverage) / float(lastest_price.get('price')) , token_decimal)
         next_dca_price_long = round((marginAmount_long - abs(colateralAmount_long * config.dca_percent)) / float(response[1].get('positionAmt')), token_decimal)
-        takeProfit_long_atPrice = round((marginAmount_long + abs(colateralAmount_long * config.dca_percent)) / float(response[1].get('positionAmt')), token_decimal)
+        takeProfit_long_atPrice = round((marginAmount_long + abs(colateralAmount_long * config.takeProfit_percent)) / float(response[1].get('positionAmt')), token_decimal)
 
         if str(current_time) =='9:30:00' or str(current_time) == '17:30:00':
             telegram_bot_sendtext("unRealizedProfit_long " + str(unRealizedProfit_long)
@@ -115,7 +115,7 @@ def lets_make_some_money(pair, leverage, amount, token_decimal, price_decimal):
         add_amount_short = round(colateralAmount_short * config.dca_amount_percent, price_decimal)
         add_quantity_short = round((add_amount_short * leverage) / float(lastest_price.get('price')) , token_decimal)
         next_dca_price_short = round((marginAmount_short + abs(colateralAmount_short * config.dca_percent)) / abs(float(response[2].get('positionAmt'))), token_decimal)
-        takeProfit_short_atPrice = round((marginAmount_short - abs(colateralAmount_short * config.dca_percent)) / abs(float(response[2].get('positionAmt'))), token_decimal)
+        takeProfit_short_atPrice = round((marginAmount_short - abs(colateralAmount_short * config.takeProfit_percent)) / abs(float(response[2].get('positionAmt'))), token_decimal)
 
         if str(current_time) =='9:30:00' or str(current_time) == '17:30:00':
             telegram_bot_sendtext("unRealizedProfit_short " + str(unRealizedProfit_short)

@@ -2,9 +2,9 @@ live_trade = True
 
 coin     = ["BNB"]
 # BNB
-amount = [20]
+amount = [5]
 # 0.75
-leverage = [10]
+leverage = [20]
 token_decimal = [2]
 price_decimal = [2]
 
@@ -19,7 +19,7 @@ for i in range(len(coin)):
     print()
 
 #DCA
-dca_percent = -0.7
+dca_percent = -1
 dca_amount_percent = 0.25
 takeProfit_percent = 0.1
 # dca_measure = 100
