@@ -4,8 +4,11 @@ from binance.client import Client
 from termcolor import colored
 
 # Get environment variables
-api_key     = ''
-api_secret  = ''
+api_key = os.getenv('api_key', None)
+api_secret = os.getenv('api_secret', None)
+
+# api_key     = ''
+# api_secret  = ''
 client      = Client(api_key, api_secret)
 live_trade  = config.live_trade
 
@@ -42,6 +45,9 @@ def change_leverage(pair, leverage):
 
 def change_margin_to_ISOLATED(pair):
     return client.futures_change_margin_type(symbol=pair, marginType="ISOLATED", timestamp=get_timestamp())
+
+def CRhange_margin_to_CROSSED(pair):
+    return client.futures_change_margin_type(symbol=pair, marginType="CROSSED", timestamp=get_timestamp())    
 
 def set_hedge_mode():
     if not client.futures_get_position_mode(timestamp=get_timestamp()).get('dualSidePosition'):
