@@ -1,43 +1,30 @@
 live_trade = True
 
-coin     = ["BNB"]
+coin     = ["BTCUSDT", "ETHUSDT"]
 # BNB
-amount = [5]
+amount = [100, 100]
 # 0.75
-leverage = [20]
-token_decimal = [2]
-price_decimal = [2]
+leverage = [30, 30]
+token_decimal = [4, 4]
+price_decimal = [2, 2]
+tick_size = ["1d", "1d"]
+#DCA
+amplitude = [10, 10]
+takeProfit_percent = [30, 30]
+dca_percent = [-1, -1]
 
-pair = []
+pairs = []
 
 for i in range(len(coin)):
-    pair.append(coin[i] + "USDT")
-
-    print("Pair Name        :   " + pair[i])
-    print("Trade amount   :   " + str(amount[i]) + " " + "USDT")
-    print("Leverage         :   " + str(leverage[i]))
+    pair = {}
+    pair["pair"] = coin[i]
+    pair["amount"] = str(amount[i])
+    pair["leverage"] = leverage[i]
+    pair["token_decimal"] = str(token_decimal[i])
+    pair["price_decimal"] = price_decimal[i]
+    pair["tick_size"] = str(tick_size[i])     
+    pair["amplitude"] = str(amplitude[i])
+    pair["takeProfit_percent"] = takeProfit_percent[i]
+    pair["dca_percent"] = str(dca_percent[i])           
+    pairs.append(pair)
     print()
-
-#DCA
-dca_percent = -1
-dca_amount_percent = 0.25
-takeProfit_percent = 0.1
-# dca_measure = 100
-
-# # long
-# add_long_measure = 35
-# new_quantity_long_multiplier = 0.30
-# takeprofitlong_usd = 0.5
-# liquidationpricemarklong_percent = 5
-
-# # short
-# add_short_measure = 35
-# new_quantity_short_multiplier = 0.30
-# takeprofitshort_usd = 0.5
-# liquidationpricemarkshort_percent = 5
-
-# long position / short position
-# "add_long_measure" is a % between entry and current positions, when exceed % add "new_quantity_long"
-# "new_quantity_long_multiplier" is a multiplier for every next order, if multiplier smaller than every next
-# order will be smaller than order before
-# "liquidationpricemarkshort_percent" % before liqudation add "quantity", better to keep around 5-10%

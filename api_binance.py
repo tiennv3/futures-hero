@@ -4,11 +4,8 @@ from binance.client import Client
 from termcolor import colored
 
 # Get environment variables
-api_key = os.getenv('api_key', None)
-api_secret = os.getenv('api_secret', None)
-
-# api_key     = ''
-# api_secret  = ''
+api_key     = ''
+api_secret  = ''
 client      = Client(api_key, api_secret)
 live_trade  = config.live_trade
 
