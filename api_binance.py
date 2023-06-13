@@ -4,6 +4,9 @@ from binance.client import Client
 from termcolor import colored
 
 # Get environment variables
+# api_key = os.getenv('api_key', None)
+# api_secret = os.getenv('api_secret', None)
+
 api_key     = ''
 api_secret  = ''
 client      = Client(api_key, api_secret)
@@ -23,19 +26,32 @@ def get_lastest_price(pair):
     time.sleep(1)
     return client.futures_symbol_ticker(symbol=pair, timestamp=get_timestamp())    
 
+def get_asset_balance(asset):
+    time.sleep(1)
+    return client.get_asset_balance(asset=asset, timestamp=get_timestamp())        
+
+def futures_account_balance(asset):
+    time.sleep(1)
+    acc_balance = client.futures_account_balance()
+    for check_balance in acc_balance:
+        if check_balance["asset"] == asset:
+            balance = check_balance["withdrawAvailable"]
+            return balance
+    # return client.futures_account_balance(asset=asset, timestamp=get_timestamp())         
+
 def account_trades(pair, timestamp):
     time.sleep(1)
     return client.futures_account_trades(symbol=pair, timestamp=get_timestamp(), startTime=timestamp)
 
 def LONG_SIDE(response):
     time.sleep(1)
-    if float(response[1].get('positionAmt')) > 0: return "LONGING"
-    elif float(response[1].get('positionAmt')) == 0: return "NO_POSITION"
+    if float(response.get('positionAmt')) > 0: return "LONGING"
+    elif float(response.get('positionAmt')) == 0: return "NO_POSITION"
 
 def SHORT_SIDE(response):
     time.sleep(1)
-    if float(response[2].get('positionAmt')) < 0 : return "SHORTING"
-    elif float(response[2].get('positionAmt')) == 0: return "NO_POSITION"
+    if float(response.get('positionAmt')) < 0 : return "SHORTING"
+    elif float(response.get('positionAmt')) == 0: return "NO_POSITION"
 
 def change_leverage(pair, leverage):
     return client.futures_change_leverage(symbol=pair, leverage=leverage, timestamp=get_timestamp())
@@ -43,19 +59,23 @@ def change_leverage(pair, leverage):
 def change_margin_to_ISOLATED(pair):
     return client.futures_change_margin_type(symbol=pair, marginType="ISOLATED", timestamp=get_timestamp())
 
-def CRhange_margin_to_CROSSED(pair):
+def Change_margin_to_CROSSED(pair):
     return client.futures_change_margin_type(symbol=pair, marginType="CROSSED", timestamp=get_timestamp())    
 
 def set_hedge_mode():
     if not client.futures_get_position_mode(timestamp=get_timestamp()).get('dualSidePosition'):
         return client.futures_change_position_mode(dualSidePosition="true", timestamp=get_timestamp())
 
+def set_hedge_mode_off():
+    if client.futures_get_position_mode(timestamp=get_timestamp()).get('dualSidePosition'):
+        return client.futures_change_position_mode(dualSidePosition="false", timestamp=get_timestamp())
+
 def market_open_long(pair, quantity):
     time.sleep(1)
     if live_trade:
         client.futures_create_order(symbol=pair,
                                     quantity=quantity,
-                                    positionSide="LONG",
+                                    # positionSide="LONG",
                                     type="MARKET",
                                     side="BUY",
                                     timestamp=get_timestamp())
@@ -72,7 +92,7 @@ def market_open_short(pair, quantity):
     if live_trade:
         client.futures_create_order(symbol=pair,
                                     quantity=quantity,
-                                    positionSide="SHORT",
+                                    # positionSide="SHORT",
                                     type="MARKET",
                                     side="SELL",
                                     timestamp=get_timestamp())
@@ -84,25 +104,25 @@ def market_open_short(pair, quantity):
 def market_close_long(pair, response):
     if live_trade:
         client.futures_create_order(symbol=pair,
-                                    quantity=abs(float(response[1].get('positionAmt'))),
-                                    positionSide="LONG",
+                                    quantity=abs(float(response.get('positionAmt'))),
+                                    # positionSide="LONG",
                                     side="SELL",
                                     type="MARKET",
                                     timestamp=get_timestamp())
     print("CLOSE_LONG")
     if active_webhook:
-        telegram_bot_sendtext(" CLOSE_LONG "+str(pair)+ " | Position: "+ str(abs(float(response[1].get('positionAmt')))) + "| X"+ str(response[1].get('leverage')) + " | Market Price: "+ str(float(response[1].get('markPrice'))) + " Profit: "+ str(float(response[1].get('unRealizedProfit'))) + " SELL MARKET ")
+        telegram_bot_sendtext(" CLOSE_LONG "+str(pair)+ " | Position: "+ str(abs(float(response.get('positionAmt')))) + "| X"+ str(response.get('leverage')) + " | Market Price: "+ str(float(response.get('markPrice'))) + " Profit: "+ str(float(response.get('unRealizedProfit'))) + " SELL MARKET ")
 
 def market_close_short(pair, response):
     if live_trade:
         client.futures_create_order(symbol=pair,
-                                    quantity=abs(float(response[2].get('positionAmt'))),
-                                    positionSide="SHORT",
+                                    quantity=abs(float(response.get('positionAmt'))),
+                                    # positionSide="SHORT",
                                     side="BUY",
                                     type="MARKET",
                                     timestamp=get_timestamp())
     print("CLOSE_SHORT")
     if active_webhook:
-        telegram_bot_sendtext(" CLOSE_SHORT "+pair+" | Position: "+ str(abs(float(response[2].get('positionAmt')))) + "| X"+ str(response[2].get('leverage')) + " | Market Price: "+ str(float(response[2].get('markPrice'))) + " Profit: "+ str(float(response[2].get('unRealizedProfit'))) + "   BUY MARKET ")
+        telegram_bot_sendtext(" CLOSE_SHORT "+pair+" | Position: "+ str(abs(float(response.get('positionAmt')))) + "| X"+ str(response.get('leverage')) + " | Market Price: "+ str(float(response.get('markPrice'))) + " Profit: "+ str(float(response.get('unRealizedProfit'))) + "   BUY MARKET ")
 
-set_hedge_mode()
+# set_hedge_mode_off()

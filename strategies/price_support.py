@@ -1,11 +1,9 @@
 import modules.candlestick
 import pandas
 
-test_module = False
-
-def futures_hero(pair, tick_size):
+def futures_hero(pair_config):
     # Fetch the raw klines data
-    main_raw = modules.candlestick.get_klines(pair, tick_size)
+    main_raw = modules.candlestick.get_klines(pair_config["pair"], pair_config["tick_size"])
     # Process Technical Analysis
     dataset   = modules.candlestick.candlestick(main_raw)[["timestamp", "open", "high", "low", "close"]].copy()
     main_can = modules.candlestick.candlestick(main_raw)[["timestamp", "color"]].copy()
@@ -16,31 +14,35 @@ def futures_hero(pair, tick_size):
     # Merge all the necessarily data into one Dataframe
     dataset = pandas.merge_asof(dataset, main_can, on='timestamp')
     
-    dataset["GO_LONG"] = dataset.apply(GO_LONG_CONDITION, axis=1)
-    dataset["GO_SHORT"] = dataset.apply(GO_SHORT_CONDITION, axis=1)
-    # dataset["EXIT_LONG"] = dataset.apply(EXIT_LONG_CONDITION, axis=1)
-    # dataset["EXIT_SHORT"] = dataset.apply(EXIT_SHORT_CONDITION, axis=1)
+    dataset["APMLITUDE"] = dataset.apply(CALC_APMLITUDE, axis=1)
+    dataset["GO_LONG"] = dataset.apply(GO_LONG_CONDITION, args=(pair_config, ), axis=1)
+    dataset["GO_SHORT"] = dataset.apply(GO_SHORT_CONDITION, args=(pair_config, ), axis=1)
+    
     last_tick = dataset.iloc[-1:]
     return last_tick
 
-def GO_LONG_CONDITION(dataset):
-    color = "GREEN"
-    if  dataset['main_candle'] == color: return True    
-    else : return False
-
-def GO_SHORT_CONDITION(dataset):
+def CALC_APMLITUDE(dataset):
+    return (dataset['low'] - dataset['high']) / dataset['high'] * 100
+   
+def GO_LONG_CONDITION(dataset, pair_config):
     color = "RED"
-    if  dataset['main_candle'] == color: return True    
+
+    if  dataset['main_candle'] == color and \
+        dataset['close'] < dataset['high'] and \
+        abs(dataset['APMLITUDE']) >= float(pair_config['amplitude']) : return True    
     else : return False
 
-def EXIT_LONG_CONDITION(dataset):
-    if dataset['price_short']: return True
+def GO_SHORT_CONDITION(dataset, pair_config):
+    color = "GREEN"
+    if  dataset['main_candle'] == color and \
+        dataset['close'] > dataset['high'] and \
+        abs(dataset['APMLITUDE']) >= float(pair_config['amplitude']) : return True     
     else : return False
 
-def EXIT_SHORT_CONDITION(dataset):
-    if dataset['price_long']: return True
+def NEED_DCA_CONDITION(pair_config, unRealizedProfit, colateralAmount):
+    if  unRealizedProfit >= (round(float(colateralAmount * pair_config['dca_percent']), pair_config['price_decimal'])): return True     
     else : return False
 
-if test_module:
-    run = futures_hero("ETHUSDT")
-    print(run)
+def TAKE_PROFIT_CONDITION(pair_config, unRealizedProfit, colateralAmount):
+    if  unRealizedProfit >= (round(float(colateralAmount * pair_config['takeProfit_percent']), pair_config['price_decimal'])): return True     
+    else : return False
