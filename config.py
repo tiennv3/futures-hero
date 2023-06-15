@@ -15,7 +15,7 @@ takeProfit_percent = [0.3]
 dca_percent = [-1]
 dca_amount_ratio = [1]
 
-fund_ratio = 1
+fund_ratio = 2
 max_amount = 70
 
 pairs = []
