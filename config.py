@@ -13,9 +13,9 @@ tick_size = ["1d", "1d"]
 amplitude = [2]
 takeProfit_percent = [0.3]
 dca_percent = [-1]
-dca_amount_percent = [1]
+dca_amount_ratio = [2]
 
-fund_ratio = 3
+fund_ratio = 1
 max_amount = 70
 
 pairs = []
@@ -32,5 +32,5 @@ for i in range(len(coin)):
     pair["amplitude"] = str(amplitude[i])
     pair["takeProfit_percent"] = float(takeProfit_percent[i])
     pair["dca_percent"] = float(dca_percent[i])      
-    pair["dca_amount_percent"] = float(dca_amount_percent[i])         
+    pair["dca_amount_ratio"] = float(dca_amount_ratio[i])         
     pairs.append(pair)
