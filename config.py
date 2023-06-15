@@ -3,7 +3,7 @@ live_trade = True
 coin     = ["ETH"]
 asset     = ["USDT"]
 # BNB
-amount = [100]
+init_amount = [30]
 # 0.75
 leverage = [30]
 token_decimal = [2]
@@ -13,7 +13,7 @@ tick_size = ["1d", "1d"]
 amplitude = [2]
 takeProfit_percent = [0.3]
 dca_percent = [-1]
-dca_amount_ratio = [2]
+dca_amount_ratio = [1]
 
 fund_ratio = 1
 max_amount = 70
@@ -24,7 +24,7 @@ for i in range(len(coin)):
     pair = {}
     pair["pair"] = coin[i] + asset[i]
     pair["asset"] = asset[i]
-    pair["amount"] = float(amount[i])
+    pair["init_amount"] = float(init_amount[i])
     pair["leverage"] = int(leverage[i])
     pair["token_decimal"] = int(token_decimal[i])
     pair["price_decimal"] = int(price_decimal[i])
