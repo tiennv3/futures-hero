@@ -35,7 +35,7 @@ def GO_LONG_CONDITION(dataset, pair_config):
 def GO_SHORT_CONDITION(dataset, pair_config):
     color = "GREEN"
     if  dataset['main_candle'] == color and \
-        dataset['close'] > dataset['high'] and \
+        dataset['close'] > dataset['low'] and \
         abs(dataset['APMLITUDE']) >= float(pair_config['amplitude']) : return True     
     else : return False
 
