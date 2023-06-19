@@ -108,7 +108,7 @@ def lets_make_some_money(pair_config):
 
             add_amount_short = round(pair_config["init_amount"] * float(pair_config["dca_amount_ratio"]), int(pair_config["price_decimal"]))
             add_quantity_short = round((add_amount_short * float(pair_config["leverage"])) / float(lastest_price.get('price')) , int(pair_config["token_decimal"]))
-            next_dca_price_short = round((marginAmount_short + abs(colateralAmount_short * float(pair_config["dca_percent"]))) / abs(float(response.get('positionAmt'))), int(pair_config["token_decimal"]))
+            next_dca_price_short = round((marginAmount_short + unRealizedProfit_short  + abs(colateralAmount_short * float(pair_config["dca_percent"]))) / abs(float(response.get('positionAmt'))), int(pair_config["token_decimal"]))
             takeProfit_short_atPrice = round((marginAmount_short - abs(colateralAmount_short * float(pair_config["takeProfit_percent"])) - abs(unRealizedProfit_short) ) / abs(float(response.get('positionAmt'))), int(pair_config["token_decimal"]))
             
             print("Asset Balance: " + str(asset_balance))
@@ -123,7 +123,7 @@ def lets_make_some_money(pair_config):
             print("add_quantity_short " + str(add_quantity_short))
             print("takeProfit_short_atPrice " + str(takeProfit_short_atPrice))
 
-            if unRealizedProfit_short >= (round(float(colateralAmount_short * config.takeProfit_percent), int(pair_config["price_decimal"]))):
+            if unRealizedProfit_short >= (round(float(colateralAmount_short * float( pair_config["takeProfit_percent"])), int(pair_config["price_decimal"]))):
                 api_binance.market_close_short(pair_config["pair"], response)
                 print(colored("SHORT_SIDE : Take Profit ", "red"))
                 print("SHORT_SIDE : Take Profit " + str(unRealizedProfit_short))
@@ -132,7 +132,7 @@ def lets_make_some_money(pair_config):
                 # wait for 1-3 seconds
                 time.sleep(random.randint(1, 3))
             else: 
-                if unRealizedProfit_short <= (round(float(colateralAmount_short * config.dca_percent), int(pair_config["price_decimal"]))) and \
+                if unRealizedProfit_short <= (round(float(colateralAmount_short * pair_config["dca_percent"]), int(pair_config["price_decimal"]))) and \
                     colateralAmount_short < float(asset_balance) / config.fund_ratio and \
                     colateralAmount_short < config.max_amount:
                     api_binance.market_open_short(pair_config["pair"], add_quantity_short)

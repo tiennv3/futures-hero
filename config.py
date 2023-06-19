@@ -12,7 +12,7 @@ tick_size = ["1d", "1d"]
 #DCA
 amplitude = [2]
 takeProfit_percent = [0.3]
-dca_percent = [-1]
+dca_percent = [-1.2]
 dca_amount_ratio = [1]
 
 fund_ratio = 2
