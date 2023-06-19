@@ -60,7 +60,7 @@ def lets_make_some_money(pair_config):
 
             add_amount_long = round(pair_config["init_amount"] * float(pair_config["dca_amount_ratio"]), pair_config["price_decimal"])
             add_quantity_long = round((add_amount_long * float(pair_config["leverage"])) / float(lastest_price.get('price')) , pair_config["token_decimal"])
-            next_dca_price_long = round((marginAmount_long - abs(colateralAmount_long * float(pair_config["dca_percent"]))) / float(response.get('positionAmt')), pair_config["token_decimal"])
+            next_dca_price_long = round((marginAmount_long - unRealizedProfit_long - abs(colateralAmount_long * float(pair_config["dca_percent"]))) / float(response.get('positionAmt')), pair_config["token_decimal"])
             takeProfit_long_atPrice = round((marginAmount_long + abs(colateralAmount_long * float(pair_config["takeProfit_percent"])) - unRealizedProfit_long) / float(response.get('positionAmt')), pair_config["token_decimal"])
 
             print("Asset Balance: " + str(asset_balance))
