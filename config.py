@@ -10,7 +10,7 @@ token_decimal = [2]
 price_decimal = [2, ]
 tick_size = ["1d", "1d"]
 #DCA
-amplitude = [2]
+amplitude = [2.5]
 takeProfit_percent = [0.3]
 dca_percent = [-1.2]
 dca_amount_ratio = [1]
@@ -29,7 +29,7 @@ for i in range(len(coin)):
     pair["token_decimal"] = int(token_decimal[i])
     pair["price_decimal"] = int(price_decimal[i])
     pair["tick_size"] = str(tick_size[i])     
-    pair["amplitude"] = str(amplitude[i])
+    pair["amplitude"] = float(amplitude[i])
     pair["takeProfit_percent"] = float(takeProfit_percent[i])
     pair["dca_percent"] = float(dca_percent[i])      
     pair["dca_amount_ratio"] = float(dca_amount_ratio[i])         
