@@ -1,22 +1,22 @@
 live_trade = True
 
-coin     = ["ETH"]
-asset     = ["USDT"]
+coin     = ["ETH", "BTC"]
+asset     = ["USDT", "USDT"]
 # BNB
-init_amount = [30]
+init_amount = [30, 30]
 # 0.75
-leverage = [30]
-token_decimal = [2]
-price_decimal = [2, ]
+leverage = [30, 30]
+token_decimal = [2, 4]
+price_decimal = [2, 2]
 tick_size = ["1d", "1d"]
 #DCA
-amplitude = [2.5]
-takeProfit_percent = [0.3]
-dca_percent = [-1.2]
-dca_amount_ratio = [1]
+amplitude = [2.5, 1.5]
+takeProfit_percent = [0.3, 0.3]
+dca_percent = [-1.2, -1.2]
+dca_amount_ratio = [0.5, 0.5]
 
-fund_ratio = 2
-max_amount = 70
+fund_ratio = 0.8
+max_amount = 300
 
 pairs = []
 

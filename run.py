@@ -36,7 +36,7 @@ def lets_make_some_money(pair_config):
         print(hero)
 
         # posAmount = float(asset_balance) / 4
-        posAmount = pair_config["init_amount"]
+        posAmount = CALC_ORDER_AMOUNT(asset_balance)
         init_quantity = round((float(pair_config["leverage"]) * posAmount / float(lastest_price.get('price'))), int(pair_config["token_decimal"]))
 
         if hero["GO_LONG"].iloc[-1] and float(asset_balance) > 100:           
@@ -58,7 +58,7 @@ def lets_make_some_money(pair_config):
             colateralAmount_long = round((abs(float(response.get('notional'))) / pair_config["leverage"]), pair_config["price_decimal"])
             marginAmount_long = round(abs(float(response.get('notional'))), int(pair_config["price_decimal"]))
 
-            add_amount_long = round(pair_config["init_amount"] * float(pair_config["dca_amount_ratio"]), pair_config["price_decimal"])
+            add_amount_long = round(colateralAmount_long * float(pair_config["dca_amount_ratio"]), pair_config["price_decimal"])
             add_quantity_long = round((add_amount_long * float(pair_config["leverage"])) / float(lastest_price.get('price')) , pair_config["token_decimal"])
             next_dca_price_long = round((marginAmount_long - unRealizedProfit_long - abs(colateralAmount_long * float(pair_config["dca_percent"]))) / float(response.get('positionAmt')), pair_config["token_decimal"])
             takeProfit_long_atPrice = round((marginAmount_long + abs(colateralAmount_long * float(pair_config["takeProfit_percent"])) - unRealizedProfit_long) / float(response.get('positionAmt')), pair_config["token_decimal"])
@@ -106,7 +106,7 @@ def lets_make_some_money(pair_config):
             colateralAmount_short = round((abs(float(response.get('notional'))) / float(pair_config["leverage"])), int(pair_config["price_decimal"]))
             marginAmount_short = round(abs(float(response.get('notional'))), int(pair_config["price_decimal"]))
 
-            add_amount_short = round(pair_config["init_amount"] * float(pair_config["dca_amount_ratio"]), int(pair_config["price_decimal"]))
+            add_amount_short = round(colateralAmount_short * float(pair_config["dca_amount_ratio"]), int(pair_config["price_decimal"]))
             add_quantity_short = round((add_amount_short * float(pair_config["leverage"])) / float(lastest_price.get('price')) , int(pair_config["token_decimal"]))
             next_dca_price_short = round((marginAmount_short + unRealizedProfit_short  + abs(colateralAmount_short * float(pair_config["dca_percent"]))) / abs(float(response.get('positionAmt'))), int(pair_config["token_decimal"]))
             takeProfit_short_atPrice = round((marginAmount_short - abs(colateralAmount_short * float(pair_config["takeProfit_percent"])) - abs(unRealizedProfit_short) ) / abs(float(response.get('positionAmt'))), int(pair_config["token_decimal"]))
@@ -144,6 +144,10 @@ def lets_make_some_money(pair_config):
                                         + " | add_quantity_short " + str(add_quantity_short))
                 else: print(colored("SHORT_SIDE : HOLDING_SHORT ", "red"))           
     print("Last action executed @ " + datetime.now().strftime("%H:%M:%S") + "\n")
+
+def CALC_ORDER_AMOUNT(asset_balance):
+    pair_count = len(config.pairs)
+    return asset_balance / pair_count * 10
 
 try:
     while True:
