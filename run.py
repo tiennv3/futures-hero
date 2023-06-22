@@ -37,8 +37,9 @@ def lets_make_some_money(pair_config):
 
         # posAmount = float(asset_balance) / 4
         posAmount = CALC_ORDER_AMOUNT(asset_balance)
+        print("posAmount: " + str(posAmount))
         init_quantity = round((float(pair_config["leverage"]) * posAmount / float(lastest_price.get('price'))), int(pair_config["token_decimal"]))
-
+        print("init_quantity: " + str(init_quantity))
         if hero["GO_LONG"].iloc[-1] and float(asset_balance) > 100:           
             api_binance.market_open_long(pair_config["pair"], init_quantity)
             telegram_bot_sendtext("LONG_SIDE : OPEN LONG "
@@ -109,7 +110,7 @@ def lets_make_some_money(pair_config):
             add_amount_short = round(colateralAmount_short * float(pair_config["dca_amount_ratio"]), int(pair_config["price_decimal"]))
             add_quantity_short = round((add_amount_short * float(pair_config["leverage"])) / float(lastest_price.get('price')) , int(pair_config["token_decimal"]))
             next_dca_price_short = round((marginAmount_short + unRealizedProfit_short  + abs(colateralAmount_short * float(pair_config["dca_percent"]))) / abs(float(response.get('positionAmt'))), int(pair_config["token_decimal"]))
-            takeProfit_short_atPrice = round((marginAmount_short - abs(colateralAmount_short * float(pair_config["takeProfit_percent"])) - abs(unRealizedProfit_short) ) / abs(float(response.get('positionAmt'))), int(pair_config["token_decimal"]))
+            takeProfit_short_atPrice = round((marginAmount_short - abs(colateralAmount_short * float(pair_config["takeProfit_percent"])) + unRealizedProfit_short ) / abs(float(response.get('positionAmt'))), int(pair_config["token_decimal"]))
             
             print("Asset Balance: " + str(asset_balance))
             print("unRealizedProfit_short " + str(unRealizedProfit_short))  
@@ -147,7 +148,9 @@ def lets_make_some_money(pair_config):
 
 def CALC_ORDER_AMOUNT(asset_balance):
     pair_count = len(config.pairs)
-    return asset_balance / pair_count * 10
+    print("pair_count: " + str(pair_count))
+    print("asset_balance: " + str(asset_balance))
+    return asset_balance / (pair_count * 10)
 
 try:
     while True:
@@ -167,9 +170,7 @@ try:
                 requests.exceptions.ReadTimeout,
                 ConnectionResetError, KeyError, OSError) as e:
 
-            if not os.path.exists("ERROR"): os.makedirs("ERROR")
-            with open((os.path.join("ERROR", config.pair[i] + ".txt")), "a", encoding="utf-8") as error_message:
-                error_message.write("[!] " + config.pair[i] + " - " + "Created at : " + datetime.today().strftime("%d-%m-%Y @ %H:%M:%S") + "\n" + str(e) + "\n\n")
+            if not os.path.exists("ERROR"):
                 print(e)
                 telegram_bot_sendtext(" ERROR RESPONSE API BINANCE: "+ str(e)+"")
 
