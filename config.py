@@ -1,10 +1,9 @@
 live_trade = True
-
+# ETH BTC XRP
 coin     = ["ETH", "BTC"]
 asset     = ["USDT", "USDT"]
-# BNB
+
 init_amount = [30, 30, 30]
-# 0.75
 leverage = [30, 30, 30]
 token_decimal = [3, 3, 1]
 price_decimal = [2, 1, 4]
