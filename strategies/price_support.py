@@ -26,16 +26,19 @@ def CALC_APMLITUDE(dataset):
    
 def GO_LONG_CONDITION(dataset, pair_config):
     color = "RED"
-
+    x = dataset['high'] - ((dataset['high'] - dataset['low']) * 0.9)
     if  dataset['main_candle'] == color and \
         dataset['close'] < dataset['open'] and \
+        dataset['close'] < x and \
         abs(dataset['APMLITUDE']) >= float(pair_config['amplitude']) : return True    
     else : return False
 
 def GO_SHORT_CONDITION(dataset, pair_config):
     color = "GREEN"
+    x = dataset['low'] + ((dataset['high'] - dataset['low']) * 0.9)
     if  dataset['main_candle'] == color and \
         dataset['close'] > dataset['open'] and \
+        dataset['close'] > x and \
         abs(dataset['APMLITUDE']) >= float(pair_config['amplitude']) : return True     
     else : return False
 
