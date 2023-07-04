@@ -61,8 +61,8 @@ def lets_make_some_money(pair_config):
 
             add_amount_long = round(colateralAmount_long * float(pair_config["dca_amount_ratio"]), pair_config["price_decimal"])
             add_quantity_long = round((add_amount_long * float(pair_config["leverage"])) / float(lastest_price.get('price')) , pair_config["token_decimal"])
-            next_dca_price_long = round((marginAmount_long - unRealizedProfit_long - abs(colateralAmount_long * float(pair_config["dca_percent"]))) / float(response.get('positionAmt')), pair_config["token_decimal"])
-            takeProfit_long_atPrice = round((marginAmount_long + abs(colateralAmount_long * float(pair_config["takeProfit_percent"])) - unRealizedProfit_long) / float(response.get('positionAmt')), pair_config["token_decimal"])
+            next_dca_price_long = round((marginAmount_long - unRealizedProfit_long - abs(colateralAmount_long * float(pair_config["dca_percent"]))) / float(response.get('positionAmt')), pair_config["price_decimal"])
+            takeProfit_long_atPrice = round((marginAmount_long + abs(colateralAmount_long * float(pair_config["takeProfit_percent"])) - unRealizedProfit_long) / float(response.get('positionAmt')), pair_config["price_decimal"])
 
             print("Asset Balance: " + str(asset_balance))
             print("unRealizedProfit_long " + str(unRealizedProfit_long))          
@@ -76,9 +76,10 @@ def lets_make_some_money(pair_config):
             print("add_quantity_long " + str(add_quantity_long))
             print("takeProfit_long_atPrice " + str(takeProfit_long_atPrice))
 
+            open_take_Profit_order_long = api_binance.get_take_profit_order(pair_config["pair"])
             #Take Long profit:
             if unRealizedProfit_long >= (round(float(colateralAmount_long * float(pair_config["takeProfit_percent"])), int(pair_config["price_decimal"]))):
-                api_binance.market_close_long(pair_config["pair"], response)
+                # api_binance.market_close_long(pair_config["pair"], response)
                 print(colored("LONG_SIDE : Take Profit ", "green"))
                 print("LONG_SIDE : Take Profit " + str(unRealizedProfit_long))
                 telegram_bot_sendtext("LONG_SIDE : Take Profit "
@@ -93,11 +94,20 @@ def lets_make_some_money(pair_config):
                     api_binance.market_open_long(pair_config["pair"], add_quantity_long)
                     # wait for 1-3 seconds
                     time.sleep(random.randint(1, 3))
+
+                    if open_take_Profit_order_short is not None:
+                        api_binance.cancel_open_order(pair_config["pair"], open_take_Profit_order_long["orderId"]) 
+
                     print(colored("LONG_SIDE : ADD LONG ", "green"))
                     print("LONG_SIDE : add_quantity_long " + str(add_quantity_long))
                     telegram_bot_sendtext("LONG_SIDE : ADD LONG "
                                         + " | add_quantity_long " + str(add_quantity_long))     
-                else: print(colored("LONG_SIDE : HOLDING_LONG ", "green"))
+                else: 
+                    response_long = api_binance.position_information(pair_config["pair"])[0]
+                    if open_take_Profit_order_long is None and api_binance.LONG_SIDE(response_long) == "LONGING":
+                        api_binance.take_profit_market_long(pair_config["pair"], round(takeProfit_long_atPrice, pair_config["price_decimal"]))
+                    telegram_bot_sendtext("test ")
+                    print(colored("LONG_SIDE : HOLDING_LONG ", "green"))
         print("**********************************************************")         
         print("\n")
 
@@ -109,8 +119,8 @@ def lets_make_some_money(pair_config):
 
             add_amount_short = round(colateralAmount_short * float(pair_config["dca_amount_ratio"]), int(pair_config["price_decimal"]))
             add_quantity_short = round((add_amount_short * float(pair_config["leverage"])) / float(lastest_price.get('price')) , int(pair_config["token_decimal"]))
-            next_dca_price_short = round((marginAmount_short + unRealizedProfit_short  + abs(colateralAmount_short * float(pair_config["dca_percent"]))) / abs(float(response.get('positionAmt'))), int(pair_config["token_decimal"]))
-            takeProfit_short_atPrice = round((marginAmount_short - abs(colateralAmount_short * float(pair_config["takeProfit_percent"])) + unRealizedProfit_short ) / abs(float(response.get('positionAmt'))), int(pair_config["token_decimal"]))
+            next_dca_price_short = round((marginAmount_short + unRealizedProfit_short  + abs(colateralAmount_short * float(pair_config["dca_percent"]))) / abs(float(response.get('positionAmt'))), int(pair_config["price_decimal"]))
+            takeProfit_short_atPrice = round((marginAmount_short - abs(colateralAmount_short * float(pair_config["takeProfit_percent"])) + unRealizedProfit_short ) / abs(float(response.get('positionAmt'))), int(pair_config["price_decimal"]))
             
             print("Asset Balance: " + str(asset_balance))
             print("unRealizedProfit_short " + str(unRealizedProfit_short))  
@@ -124,8 +134,10 @@ def lets_make_some_money(pair_config):
             print("add_quantity_short " + str(add_quantity_short))
             print("takeProfit_short_atPrice " + str(takeProfit_short_atPrice))
 
+            open_take_Profit_order_short = api_binance.get_take_profit_order(pair_config["pair"])
+
             if unRealizedProfit_short >= (round(float(colateralAmount_short * float( pair_config["takeProfit_percent"])), int(pair_config["price_decimal"]))):
-                api_binance.market_close_short(pair_config["pair"], response)
+                # api_binance.market_close_short(pair_config["pair"], response)
                 print(colored("SHORT_SIDE : Take Profit ", "red"))
                 print("SHORT_SIDE : Take Profit " + str(unRealizedProfit_short))
                 telegram_bot_sendtext("SHORT_SIDE : Take Profit "
@@ -139,11 +151,19 @@ def lets_make_some_money(pair_config):
                     api_binance.market_open_short(pair_config["pair"], add_quantity_short)
                     # wait for 1-3 seconds
                     time.sleep(random.randint(1, 3))
+                    if open_take_Profit_order_short is not None:
+                        api_binance.cancel_open_order(pair_config["pair"], open_take_Profit_order_short["orderId"]) 
+
                     print(colored("SHORT_SIDE : ADD SHORT", "red"))
                     print("SHORT_SIDE : add_quantity_short " + str(add_quantity_short))
                     telegram_bot_sendtext("SHORT_SIDE : ADD SHORT "
                                         + " | add_quantity_short " + str(add_quantity_short))
-                else: print(colored("SHORT_SIDE : HOLDING_SHORT ", "red"))           
+                else:                    
+                    response_short = api_binance.position_information(pair_config["pair"])[0]
+                    if open_take_Profit_order_short is None and api_binance.SHORT_SIDE(response_short) == "SHORTING":
+                        api_binance.take_profit_market_short(pair_config["pair"], round(takeProfit_short_atPrice, pair_config["price_decimal"]))
+
+                    print(colored("SHORT_SIDE : HOLDING_SHORT ", "red"))           
     print("Last action executed @ " + datetime.now().strftime("%H:%M:%S") + "\n")
 
 def CALC_ORDER_AMOUNT(asset_balance):
@@ -170,7 +190,7 @@ try:
                 requests.exceptions.ReadTimeout,
                 ConnectionResetError, KeyError, OSError) as e:
 
-            if not os.path.exists("ERROR"):
+            # if not os.path.exists("ERROR"):
                 print(e)
                 telegram_bot_sendtext(" ERROR RESPONSE API BINANCE: "+ str(e)+"")
 

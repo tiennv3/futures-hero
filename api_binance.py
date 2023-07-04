@@ -3,10 +3,6 @@ from webhook_launcher import telegram_bot_sendtext
 from binance.client import Client
 from termcolor import colored
 
-# Get environment variables
-# api_key = os.getenv('api_key', None)
-# api_secret = os.getenv('api_secret', None)
-
 api_key     = ''
 api_secret  = ''
 client      = Client(api_key, api_secret)
@@ -19,19 +15,19 @@ def get_timestamp():
     return int(time.time() * 1000)
 
 def position_information(pair):
-    time.sleep(1)
+    # time.sleep(1)
     return client.futures_position_information(symbol=pair, timestamp=get_timestamp())
 
 def get_lastest_price(pair):
-    time.sleep(1)
+    # time.sleep(1)
     return client.futures_symbol_ticker(symbol=pair, timestamp=get_timestamp())    
 
 def get_asset_balance(asset):
-    time.sleep(1)
+    # time.sleep(1)
     return client.get_asset_balance(asset=asset, timestamp=get_timestamp())        
 
 def futures_account_balance(asset):
-    time.sleep(1)
+    # time.sleep(1)
     acc_balance = client.futures_account_balance()
     for check_balance in acc_balance:
         if check_balance["asset"] == asset:
@@ -40,9 +36,9 @@ def futures_account_balance(asset):
     # return client.futures_account_balance(asset=asset, timestamp=get_timestamp())         
 
 def get_take_profit_order(pair):
-    orders = client.futures_get_open_orders()
+    orders = client.futures_get_open_orders(symbol=pair)
     for order in orders:
-        if orders["asset"] == pair:
+        if order["type"] == "TAKE_PROFIT_MARKET":
             return order
     # return client.futures_account_balance(asset=asset, timestamp=get_timestamp())  
 
@@ -51,12 +47,12 @@ def account_trades(pair, timestamp):
     return client.futures_account_trades(symbol=pair, timestamp=get_timestamp(), startTime=timestamp)
 
 def LONG_SIDE(response):
-    time.sleep(1)
+    # time.sleep(1)
     if float(response.get('positionAmt')) > 0: return "LONGING"
     elif float(response.get('positionAmt')) == 0: return "NO_POSITION"
 
 def SHORT_SIDE(response):
-    time.sleep(1)
+    # time.sleep(1)
     if float(response.get('positionAmt')) < 0 : return "SHORTING"
     elif float(response.get('positionAmt')) == 0: return "NO_POSITION"
 
@@ -78,7 +74,7 @@ def set_hedge_mode_off():
         return client.futures_change_position_mode(dualSidePosition="false", timestamp=get_timestamp())
 
 def cancel_open_order(pair, order):
-    time.sleep(1)
+    # time.sleep(1)
     if live_trade:
         client.futures_cancel_order(symbol=pair, 
                                     orderId= order, 
@@ -92,8 +88,10 @@ def take_profit_market_long(pair, stopPrice):
     if live_trade:
         client.futures_create_order(symbol=pair,
                                     closePosition=True,
+                                    timeInForce="GTE_GTC",
                                     side="SELL",
                                     stopPrice=stopPrice,
+                                    priceProtect=True,
                                     type="TAKE_PROFIT_MARKET",
                                     workingType= "MARK_PRICE",
                                     timestamp=get_timestamp())
@@ -106,8 +104,10 @@ def take_profit_market_short(pair, stopPrice):
     if live_trade:
         client.futures_create_order(symbol=pair,
                                     closePosition=True,
+                                    timeInForce="GTE_GTC",
                                     side="BUY",
                                     stopPrice=stopPrice,
+                                    priceProtect=True,
                                     type="TAKE_PROFIT_MARKET",
                                     workingType= "MARK_PRICE",
                                     timestamp=get_timestamp())
