@@ -39,6 +39,13 @@ def futures_account_balance(asset):
             return balance
     # return client.futures_account_balance(asset=asset, timestamp=get_timestamp())         
 
+def get_take_profit_order(pair):
+    orders = client.futures_get_open_orders()
+    for order in orders:
+        if orders["asset"] == pair:
+            return order
+    # return client.futures_account_balance(asset=asset, timestamp=get_timestamp())  
+
 def account_trades(pair, timestamp):
     time.sleep(1)
     return client.futures_account_trades(symbol=pair, timestamp=get_timestamp(), startTime=timestamp)
@@ -70,6 +77,34 @@ def set_hedge_mode_off():
     if client.futures_get_position_mode(timestamp=get_timestamp()).get('dualSidePosition'):
         return client.futures_change_position_mode(dualSidePosition="false", timestamp=get_timestamp())
 
+def take_profit_market_long(pair, stopPrice):
+    time.sleep(1)
+    if live_trade:
+        client.futures_create_order(symbol=pair,
+                                    closePosition=True,
+                                    side="SELL",
+                                    stopPrice=stopPrice,
+                                    type="TAKE_PROFIT_MARKET",
+                                    workingType= "MARK_PRICE",
+                                    timestamp=get_timestamp())
+    print("OPEN TAKE PROFIT LONG")
+    if active_webhook:
+        telegram_bot_sendtext(" PLACE TAKE PROFIT LONG "+str(pair)+ " | Take Profit Price: "+ str(stopPrice))
+
+def take_profit_market_short(pair, stopPrice):
+    time.sleep(1)
+    if live_trade:
+        client.futures_create_order(symbol=pair,
+                                    closePosition=True,
+                                    side="BUY",
+                                    stopPrice=stopPrice,
+                                    type="TAKE_PROFIT_MARKET",
+                                    workingType= "MARK_PRICE",
+                                    timestamp=get_timestamp())
+    print("OPEN TAKE PROFIT SHORT")
+    if active_webhook:
+        telegram_bot_sendtext(" PLACE TAKE PROFIT SHORT "+pair+" | Take Profit Price: "+ str(stopPrice))
+
 def market_open_long(pair, quantity):
     time.sleep(1)
     if live_trade:
@@ -82,10 +117,6 @@ def market_open_long(pair, quantity):
     print(colored("GO_LONG", "green"))
     if active_webhook:
         telegram_bot_sendtext(" GO_LONG "+ str(pair) + " "+ str(quantity) + " BUY MARKET ")
-
-
-
-
 
 def market_open_short(pair, quantity):
     time.sleep(1)
