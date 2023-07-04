@@ -77,6 +77,16 @@ def set_hedge_mode_off():
     if client.futures_get_position_mode(timestamp=get_timestamp()).get('dualSidePosition'):
         return client.futures_change_position_mode(dualSidePosition="false", timestamp=get_timestamp())
 
+def cancel_open_order(pair, order):
+    time.sleep(1)
+    if live_trade:
+        client.futures_cancel_order(symbol=pair, 
+                                    orderId= order, 
+                                    timestamp=get_timestamp())
+    print("CANCEL ORDER")
+    if active_webhook:
+        telegram_bot_sendtext(" CANCEL TAKE PROFIT ORDER "+str(pair)+ " | OrderId: "+ str(order))
+
 def take_profit_market_long(pair, stopPrice):
     time.sleep(1)
     if live_trade:
