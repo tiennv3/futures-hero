@@ -106,7 +106,6 @@ def lets_make_some_money(pair_config):
                     response_long = api_binance.position_information(pair_config["pair"])[0]
                     if open_take_Profit_order_long is None and api_binance.LONG_SIDE(response_long) == "LONGING":
                         api_binance.take_profit_market_long(pair_config["pair"], round(takeProfit_long_atPrice, pair_config["price_decimal"]))
-                    telegram_bot_sendtext("test ")
                     print(colored("LONG_SIDE : HOLDING_LONG ", "green"))
         print("**********************************************************")         
         print("\n")
