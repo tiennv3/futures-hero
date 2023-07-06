@@ -22,7 +22,7 @@ def futures_hero(pair_config):
     return last_tick
 
 def CALC_APMLITUDE(dataset):
-    return abs((dataset['close'] - dataset['high']) / dataset['high'] * 100)
+    return abs((dataset['low'] - dataset['high']) / dataset['high'] * 100)
    
 def GO_LONG_CONDITION(dataset, pair_config):
     color = "RED"
