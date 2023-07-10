@@ -16,6 +16,7 @@ dca_amount_ratio = [0.25, 0.25, 0.25]
 
 fund_ratio = 0.8
 max_amount = 450
+init_amount_divide = 15
 
 pairs = []
 
