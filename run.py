@@ -35,8 +35,8 @@ def lets_make_some_money(pair_config):
         hero = choose_your_fighter.futures_hero(pair_config)
         print(hero)
 
-        # posAmount = float(asset_balance) / 4
-        posAmount = CALC_ORDER_AMOUNT(asset_balance)
+        posAmount = float(pair_config["init_amount"])
+        # posAmount = CALC_ORDER_AMOUNT(asset_balance)
         print("posAmount: " + str(posAmount))
         init_quantity = round((float(pair_config["leverage"]) * posAmount / float(lastest_price.get('price'))), int(pair_config["token_decimal"]))
         print("init_quantity: " + str(init_quantity))
