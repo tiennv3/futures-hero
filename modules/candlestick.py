@@ -3,6 +3,8 @@ import pandas
 
 query = 1000
 ccxt_client = ccxt.binance()
+ccxt_client.options = {'defaultType': 'future',
+                    'adjustForTimeDifference': True}
 tohlcv_colume = ['timestamp', 'open', 'high', 'low', 'close', 'volume']
 def get_klines(pair, interval):
     return pandas.DataFrame(ccxt_client.fetch_ohlcv(pair, interval , limit=query), columns=tohlcv_colume)
