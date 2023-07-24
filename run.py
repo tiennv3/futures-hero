@@ -93,7 +93,7 @@ def lets_make_some_money(pair_config):
 
                     api_binance.market_open_long(pair_config["pair"], add_quantity_long)
                     # wait for 1-3 seconds
-                    time.sleep(random.randint(1, 3))
+                    time.sleep(random.randint(3, 4))
 
                     if open_take_Profit_order_short is not None:
                         api_binance.cancel_open_order(pair_config["pair"], open_take_Profit_order_long["orderId"]) 
@@ -142,14 +142,14 @@ def lets_make_some_money(pair_config):
                 telegram_bot_sendtext("SHORT_SIDE : Take Profit "
                                     + " | PNL " + str(unRealizedProfit_short))
                 # wait for 1-3 seconds
-                time.sleep(random.randint(1, 3))
+                time.sleep(random.randint(2, 3))
             else: 
                 if unRealizedProfit_short <= (round(float(colateralAmount_short * pair_config["dca_percent"]), int(pair_config["price_decimal"]))) and \
                     colateralAmount_short < float(asset_balance) / config.fund_ratio and \
                     colateralAmount_short < config.max_amount:
                     api_binance.market_open_short(pair_config["pair"], add_quantity_short)
                     # wait for 1-3 seconds
-                    time.sleep(random.randint(1, 3))
+                    time.sleep(random.randint(3, 4))
                     if open_take_Profit_order_short is not None:
                         api_binance.cancel_open_order(pair_config["pair"], open_take_Profit_order_short["orderId"]) 
 
