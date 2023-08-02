@@ -93,7 +93,7 @@ def lets_make_some_money(pair_config):
 
                     api_binance.market_open_long(pair_config["pair"], add_quantity_long)
                     # wait for 1-3 seconds
-                    time.sleep(random.randint(3, 4))
+                    time.sleep(random.randint(1, 3))
 
                     if open_take_Profit_order_short is not None:
                         api_binance.cancel_open_order(pair_config["pair"], open_take_Profit_order_long["orderId"]) 
@@ -142,14 +142,14 @@ def lets_make_some_money(pair_config):
                 telegram_bot_sendtext("SHORT_SIDE : Take Profit "
                                     + " | PNL " + str(unRealizedProfit_short))
                 # wait for 1-3 seconds
-                time.sleep(random.randint(2, 3))
+                time.sleep(random.randint(1, 3))
             else: 
                 if unRealizedProfit_short <= (round(float(colateralAmount_short * pair_config["dca_percent"]), int(pair_config["price_decimal"]))) and \
                     colateralAmount_short < float(asset_balance) / config.fund_ratio and \
                     colateralAmount_short < config.max_amount:
                     api_binance.market_open_short(pair_config["pair"], add_quantity_short)
                     # wait for 1-3 seconds
-                    time.sleep(random.randint(3, 4))
+                    time.sleep(random.randint(1, 3))
                     if open_take_Profit_order_short is not None:
                         api_binance.cancel_open_order(pair_config["pair"], open_take_Profit_order_short["orderId"]) 
 
@@ -166,10 +166,13 @@ def lets_make_some_money(pair_config):
     print("Last action executed @ " + datetime.now().strftime("%H:%M:%S") + "\n")
 
 def CALC_ORDER_AMOUNT(asset_balance):
-    pair_count = len(config.pairs)
-    print("pair_count: " + str(pair_count))
-    print("asset_balance: " + str(asset_balance))
-    return asset_balance / (pair_count * config.init_amount_divide)
+    if config.auto_amount == True:
+        pair_count = len(config.pairs)
+        print("pair_count: " + str(pair_count))
+        print("asset_balance: " + str(asset_balance))
+        return asset_balance / (pair_count * config.init_amount_divide)
+    else:
+        return float(pair_config["init_amount"])
 
 try:
     while True:
