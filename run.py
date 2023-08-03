@@ -95,7 +95,7 @@ def lets_make_some_money(pair_config):
                     # wait for 1-3 seconds
                     time.sleep(random.randint(1, 3))
 
-                    if open_take_Profit_order_short is not None:
+                    if open_take_Profit_order_long is not None:
                         api_binance.cancel_open_order(pair_config["pair"], open_take_Profit_order_long["orderId"]) 
 
                     print(colored("LONG_SIDE : ADD LONG ", "green"))
