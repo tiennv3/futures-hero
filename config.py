@@ -1,23 +1,23 @@
 live_trade = True
 # ETH BTC XRP
-coin     = ["ETH", "BTC", "XRP"]
+coin     = ["ETH",  "XRP", "BNB"]
 asset     = ["USDT", "USDT", "USDT"]
 
-init_amount = [30, 30, 20]
-leverage = [25, 30, 20]
-token_decimal = [3, 3, 1]
-price_decimal = [2, 1, 4]
-tick_size = ["1d", "1d", "1d"]
+init_amount = [20, 20, 100]
+leverage = [20, 15, 15]
+token_decimal = [3, 1, 2]
+price_decimal = [2, 4, 2]
+tick_size = ["1d", "1d", "1w"]
 #DCA
-amplitude = [3, 2.5, 4]
-takeProfit_percent = [0.3, 0.3, 0.25]
-dca_percent = [-1.2, -1.2, -1.3]
+amplitude = [3, 4, 11]
+takeProfit_percent = [0.3, 0.35, 0.3]
+dca_percent = [-1.2, -1.3, -1.2]
 dca_amount_ratio = [0.25, 0.25, 0.25]
 
 fund_ratio = 0.8
 max_amount = 450
 init_amount_divide = 15
-
+auto_amount = False
 pairs = []
 
 for i in range(len(coin)):

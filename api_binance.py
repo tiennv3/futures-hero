@@ -12,7 +12,10 @@ live_trade  = config.live_trade
 active_webhook = True
 
 def get_timestamp():
-    return int(time.time() * 1000)
+    server_time = client.get_server_time()["serverTime"]
+    time_difference = server_time - int(time.time() * 1000)
+    timestamp = int(time.time() * 1000) + time_difference
+    return timestamp
 
 def position_information(pair):
     # time.sleep(1)
@@ -74,7 +77,7 @@ def set_hedge_mode_off():
         return client.futures_change_position_mode(dualSidePosition="false", timestamp=get_timestamp())
 
 def cancel_open_order(pair, order):
-    # time.sleep(1)
+    time.sleep(1)
     if live_trade:
         client.futures_cancel_order(symbol=pair, 
                                     orderId= order, 
