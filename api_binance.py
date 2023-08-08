@@ -31,7 +31,7 @@ def futures_account_balance(asset):
     acc_balance = client.futures_account_balance()
     for check_balance in acc_balance:
         if check_balance["asset"] == asset:
-            balance = check_balance["withdrawAvailable"]
+            balance = check_balance["availableBalance"]
             return balance
     # return client.futures_account_balance(asset=asset, timestamp=get_timestamp())         
 
