@@ -13,6 +13,8 @@ amplitude = [3, 4, 11]
 takeProfit_percent = [0.3, 0.35, 0.3]
 dca_percent = [-1.2, -1.3, -1.2]
 dca_amount_ratio = [0.25, 0.25, 0.25]
+ceiling_price = [0.25, 0.25, 0.25]
+floor_price = [0.25, 0.25, 0.25]
 
 fund_ratio = 0.8
 max_amount = 450
@@ -24,6 +26,8 @@ for i in range(len(coin)):
     pair = {}
     pair["pair"] = coin[i] + asset[i]
     pair["asset"] = asset[i]
+    pair["ceiling_price"] = float(ceiling_price[i])
+    pair["floor_price"] = float(floor_price[i])
     pair["init_amount"] = float(init_amount[i])
     pair["leverage"] = int(leverage[i])
     pair["token_decimal"] = int(token_decimal[i])

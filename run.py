@@ -40,13 +40,13 @@ def lets_make_some_money(pair_config):
         print("posAmount: " + str(posAmount))
         init_quantity = round((float(pair_config["leverage"]) * posAmount / float(lastest_price.get('price'))), int(pair_config["token_decimal"]))
         print("init_quantity: " + str(init_quantity))
-        if hero["GO_LONG"].iloc[-1] and float(asset_balance) > 100:           
+        if hero["GO_LONG"].iloc[-1] and float(asset_balance) > 100 and float(lastest_price.get('price')) < pair_config["ceiling_price"]:           
             api_binance.market_open_long(pair_config["pair"], init_quantity)
             telegram_bot_sendtext("LONG_SIDE : OPEN LONG "
                         + " | init_quantity " + str(init_quantity))             
         else: print("LONG_SIDE : WAIT ")     
 
-        if hero["GO_SHORT"].iloc[-1] and float(asset_balance) > 100:
+        if hero["GO_SHORT"].iloc[-1] and float(asset_balance) > 100 and float(lastest_price.get('price')) > pair_config["floor_price"]:
             api_binance.market_open_short(pair_config["pair"], init_quantity)
             telegram_bot_sendtext("SHORT_SIDE : OPEN SHORT "
                             + " | init_quantity " + str(init_quantity))            
