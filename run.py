@@ -43,13 +43,15 @@ def lets_make_some_money(pair_config):
         if hero["GO_LONG"].iloc[-1] and float(asset_balance) > 100 and float(lastest_price.get('price')) < pair_config["ceiling_price"]:           
             api_binance.market_open_long(pair_config["pair"], init_quantity)
             telegram_bot_sendtext("LONG_SIDE : OPEN LONG "
-                        + " | init_quantity " + str(init_quantity))             
+                        + " | init_quantity " + str(init_quantity)
+                        + " | Price " + str(lastest_price.get('price')))             
         else: print("LONG_SIDE : WAIT ")     
 
         if hero["GO_SHORT"].iloc[-1] and float(asset_balance) > 100 and float(lastest_price.get('price')) > pair_config["floor_price"]:
             api_binance.market_open_short(pair_config["pair"], init_quantity)
             telegram_bot_sendtext("SHORT_SIDE : OPEN SHORT "
-                            + " | init_quantity " + str(init_quantity))            
+                            + " | init_quantity " + str(init_quantity)
+                            + " | Price " + str(lastest_price.get('price')))            
         else: print("SHORT_SIDE : WAIT")    
 
     else:
@@ -101,7 +103,8 @@ def lets_make_some_money(pair_config):
                     print(colored("LONG_SIDE : ADD LONG ", "green"))
                     print("LONG_SIDE : add_quantity_long " + str(add_quantity_long))
                     telegram_bot_sendtext("LONG_SIDE : ADD LONG "
-                                        + " | add_quantity_long " + str(add_quantity_long))     
+                                        + " | add_quantity_long " + str(add_quantity_long)
+                                        + " | Price " + str(lastest_price.get('price')))     
                 else: 
                     response_long = api_binance.position_information(pair_config["pair"])[0]
                     if open_take_Profit_order_long is None and api_binance.LONG_SIDE(response_long) == "LONGING":
@@ -156,7 +159,8 @@ def lets_make_some_money(pair_config):
                     print(colored("SHORT_SIDE : ADD SHORT", "red"))
                     print("SHORT_SIDE : add_quantity_short " + str(add_quantity_short))
                     telegram_bot_sendtext("SHORT_SIDE : ADD SHORT "
-                                        + " | add_quantity_short " + str(add_quantity_short))
+                                        + " | add_quantity_short " + str(add_quantity_short)
+                                        + " | Price " + str(lastest_price.get('price')))
                 else:                    
                     response_short = api_binance.position_information(pair_config["pair"])[0]
                     if open_take_Profit_order_short is None and api_binance.SHORT_SIDE(response_short) == "SHORTING":
