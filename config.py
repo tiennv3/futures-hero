@@ -5,7 +5,7 @@ asset     = ["USDT", "USDT", "USDT", "USDT"]
 
 init_amount = [15, 15, 20, 50] 
 leverage = [20, 20, 15, 10]
-token_decimal = [3, 3, 3], 0
+token_decimal = [3, 3, 3, 0]
 price_decimal = [2, 1, 2, 4]
 tick_size = ["1d", "1d", "1d", "1d"]
 #DCA
