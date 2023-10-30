@@ -94,9 +94,9 @@ def take_profit_market_long(pair, stopPrice):
                                     timeInForce="GTE_GTC",
                                     side="SELL",
                                     stopPrice=stopPrice,
-                                    priceProtect=True,
+                                    priceProtect=False,
                                     type="TAKE_PROFIT_MARKET",
-                                    workingType= "MARK_PRICE",
+                                    workingType= "CONTRACT_PRICE",
                                     timestamp=get_timestamp())
     print("OPEN TAKE PROFIT LONG")
     if active_webhook:
@@ -110,9 +110,9 @@ def take_profit_market_short(pair, stopPrice):
                                     timeInForce="GTE_GTC",
                                     side="BUY",
                                     stopPrice=stopPrice,
-                                    priceProtect=True,
+                                    priceProtect=False,
                                     type="TAKE_PROFIT_MARKET",
-                                    workingType= "MARK_PRICE",
+                                    workingType= "CONTRACT_PRICE",
                                     timestamp=get_timestamp())
     print("OPEN TAKE PROFIT SHORT")
     if active_webhook:
